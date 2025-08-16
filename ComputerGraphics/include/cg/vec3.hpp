@@ -1,29 +1,18 @@
+#pragma once
 #include "Export.h"
 
 
 namespace cg {
+	class Vec3 {
+    public:
+        float x, y, z;
 
+        Vec3();
+        Vec3(float x, float y, float z);
 
-	class vec3 {
+        float length() const;
 
+        Vec3 operator+(const Vec3& other) const;
 
-
-
-
-	}
-
-	class vec2 {
-
-
-
-
-
-
-
-	}
-
-
-
-
-
+	};
 }
