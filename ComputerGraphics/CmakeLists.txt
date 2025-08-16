@@ -1,0 +1,81 @@
+cmake_minimum_required(VERSION 3.16)
+
+project(ComputerGraphics VERSION 0.1.0 LANGUAGES CXX)
+
+# Require C++20
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Toggle between static or shared
+option(BUILD_SHARED_LIBS "Build ComputerGraphics as a shared library (DLL)" OFF)
+
+# Library definition
+add_library(ComputerGraphics
+    src/vec2.cpp
+    src/vec3.cpp
+)
+
+# Public includes for build and install
+target_include_directories(ComputerGraphics
+    PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)
+
+target_compile_options(ComputerGraphics PRIVATE -Wall -Wextra -Wpedantic)
+
+
+# Export symbols for DLL builds on Windows
+if (BUILD_SHARED_LIBS)
+    target_compile_definitions(ComputerGraphics PRIVATE CG_EXPORTS)
+endif()
+
+# Examples
+add_subdirectory(examples)
+
+# -------------------------
+# Install rules for packaging
+# -------------------------
+
+include(CMakePackageConfigHelpers)
+
+# Install library + headers
+install(TARGETS ComputerGraphics
+    EXPORT ComputerGraphicsTargets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)
+
+install(DIRECTORY include/
+    DESTINATION include
+)
+
+# Export targets file
+install(EXPORT ComputerGraphicsTargets
+    FILE ComputerGraphicsTargets.cmake
+    NAMESPACE ComputerGraphics::
+    DESTINATION lib/cmake/ComputerGraphics
+)
+
+# Create version file for package
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputerGraphicsConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+# Create config file for find_package()
+configure_package_config_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ComputerGraphicsConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputerGraphicsConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/ComputerGraphics
+)
+
+# Install config files
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputerGraphicsConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/ComputerGraphicsConfigVersion.cmake"
+    DESTINATION lib/cmake/ComputerGraphics
+)
