@@ -14,7 +14,7 @@ option(BUILD_SHARED_LIBS "Build ComputerGraphics as a shared library (DLL)" OFF)
 add_library(ComputerGraphics
     src/vec2.cpp
     src/vec3.cpp
-)
+ "include/Export.h")
 
 # Public includes for build and install
 target_include_directories(ComputerGraphics
@@ -28,7 +28,10 @@ target_compile_options(ComputerGraphics PRIVATE -Wall -Wextra -Wpedantic)
 
 # Export symbols for DLL builds on Windows
 if (BUILD_SHARED_LIBS)
-    target_compile_definitions(ComputerGraphics PRIVATE CG_EXPORTS)
+    target_compile_definitions(ComputerGraphics
+        PRIVATE CG_EXPORTS              # For building the DLL
+        INTERFACE CG_IMPORTS            # For consuming the DLL
+    )
 endif()
 
 # Examples
