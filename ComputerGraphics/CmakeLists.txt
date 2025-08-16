@@ -23,7 +23,11 @@ target_include_directories(ComputerGraphics
         $<INSTALL_INTERFACE:include>
 )
 
-target_compile_options(ComputerGraphics PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(ComputerGraphics PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /permissive->
+    $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>
+    $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -pedantic>
+)
 
 
 # Export symbols for DLL builds on Windows
