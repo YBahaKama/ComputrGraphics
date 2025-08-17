@@ -13,5 +13,9 @@ namespace cg {
 		float length() const;
 
 		Vec2 operator+(const Vec2& other) const;
+
+		float dot(const Vec2& other) const;
+
+		float cross(const Vec2& other) const;
 	};
 }
