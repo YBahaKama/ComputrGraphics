@@ -14,4 +14,12 @@ namespace cg {
     Vec2 Vec2::operator+(const Vec2& other) const {
         return Vec2(x + other.x, y + other.y);
     }
+
+	float Vec2::dot(const Vec2& other) const {
+		return x * other.x + y * other.y;
+	}
+
+	float Vec2::cross(const Vec2& other) const {
+		return x * other.y - y * other.x;
+	}
 } 
