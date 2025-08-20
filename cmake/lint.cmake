@@ -18,7 +18,7 @@ default(FIX NO)
 set(flag --output-replacements-xml)
 set(args OUTPUT_VARIABLE output)
 if(FIX)
-  set(flag -i)
+  set(flag -i -s)
   set(args "")
 endif()
 
