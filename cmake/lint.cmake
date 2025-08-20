@@ -13,13 +13,13 @@ default(
     include/*.hpp
     test/*.cpp test/*.hpp
 )
-default(FIX NO)
+default(FIX YES)
 
 set(flag --output-replacements-xml)
 set(args OUTPUT_VARIABLE output)
 if(FIX)
   set(flag -i)
-  set(args "-s")
+  set(args "")
 endif()
 
 file(GLOB_RECURSE files ${PATTERNS})
