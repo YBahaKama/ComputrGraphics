@@ -14,9 +14,9 @@ namespace cg {
 
         Vec3 operator+(const Vec3& other) const;
 
-        float Vec3::dot(const Vec3& other) const;
+        float dot(const Vec3& other) const;
 
-        float Vec3::cross(const Vec3& other) const;
+        float cross(const Vec3& other) const;
 
 	};
 }
