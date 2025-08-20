@@ -19,9 +19,9 @@ option(BUILD_SHARED_LIBS "Build ComputerGraphics as a shared library (DLL)" OFF)
 
 # Library definition
 add_library(ComputerGraphics
-    src/vec2.cpp
-    src/vec3.cpp
- "include/Export.h")
+    "src/vec2.cpp"
+    "src/vec3.cpp"
+    "include/Export.h")
 
 # Public includes for build and install
 target_include_directories(ComputerGraphics

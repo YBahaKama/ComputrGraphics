@@ -6,11 +6,21 @@ set(
     lcov -c -q
     -o "${PROJECT_BINARY_DIR}/coverage.info.base"
     -d "${PROJECT_BINARY_DIR}"
-    --remove "*/test/*" \ "*/include/*" \ "/usr/include/*"
     --ignore-errors mismatch,gcov,unused
     CACHE STRING
     "Step 1: Generate a base trace for the 'coverage' target"
 )
+
+set(
+    COVERAGE_FILTER_COMMAND
+    lcov 
+    --remove "*/include/*" \ "/usr/include/*"
+    --ignore-errors mismatch,gcov,unused
+    CACHE STRING
+    "Step 2: Filter targets"
+)
+
+
 
 # Step 3: Generate the final HTML report from the filtered data.
 set(
@@ -29,6 +39,7 @@ add_custom_target(
     coverage
     # Run the commands in the correct order: trace, filter, then html.
     COMMAND ${COVERAGE_TRACE_COMMAND}
+    #COMMAND ${COVERAGE_FILTER_COMMAND}     #open when works
     COMMAND ${COVERAGE_HTML_COMMAND}
     COMMENT "Generating coverage report"
     VERBATIM
