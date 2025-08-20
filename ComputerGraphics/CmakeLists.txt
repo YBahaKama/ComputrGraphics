@@ -1,11 +1,18 @@
 cmake_minimum_required(VERSION 3.16)
 
+include(cmake/prelude.cmake)
+
 project(ComputerGraphics VERSION 0.1.0 LANGUAGES CXX)
 
 # Require C++20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(cmake/project-is-top-level.cmake)
+include(cmake/variables.cmake)
+include(cmake/add_library.cmake)
+
 
 # Toggle between static or shared
 option(BUILD_SHARED_LIBS "Build ComputerGraphics as a shared library (DLL)" OFF)
@@ -28,6 +35,29 @@ target_compile_options(ComputerGraphics PRIVATE
     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>
     $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -pedantic>
 )
+# ---- Install rules ----
+set(CMAKE_SKIP_INSTALL_RULES off)
+if(NOT CMAKE_SKIP_INSTALL_RULES)
+  include(cmake/install-rules.cmake)
+endif()
+
+# ---- Developer mode ----
+message(STATUS "Including docs.cmake and configuring documentation targets")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/docs.cmake")
+  include(cmake/docs.cmake)
+endif()
+
+if(NOT executable_DEVELOPER_MODE)
+  return()
+elseif(NOT PROJECT_IS_TOP_LEVEL)
+  message(
+      AUTHOR_WARNING
+      "Developer mode is intended for developers of executable"
+  )
+endif()
+
+include(cmake/dev-mode.cmake)
+
 
 
 # Export symbols for DLL builds on Windows
@@ -46,25 +76,6 @@ add_subdirectory(examples)
 # -------------------------
 
 include(CMakePackageConfigHelpers)
-
-# Install library + headers
-install(TARGETS ComputerGraphics
-    EXPORT ComputerGraphicsTargets
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
-)
-
-install(DIRECTORY include/
-    DESTINATION include
-)
-
-# Export targets file
-install(EXPORT ComputerGraphicsTargets
-    FILE ComputerGraphicsTargets.cmake
-    NAMESPACE ComputerGraphics::
-    DESTINATION lib/cmake/ComputerGraphics
-)
 
 # Create version file for package
 write_basic_package_version_file(
