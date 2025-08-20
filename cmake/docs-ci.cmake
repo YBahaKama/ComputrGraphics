@@ -87,7 +87,7 @@ function(docs_project name)
   endif()
 endfunction()
 
-include("${bin}/docs-ci.project.cmake")
+#include("${bin}/docs-ci.project.cmake")
 
 # ---- Generate docs ----
 
