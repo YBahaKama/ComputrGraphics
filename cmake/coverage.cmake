@@ -15,6 +15,7 @@ set(
     COVERAGE_FILTER_COMMAND
     lcov 
     --remove "*/test/*" \ "*/include/*" \ "/usr/include/*"
+    --ignore-errors mismatch,gcov,unused
     CACHE STRING
     "Step 2: Filter targets"
 )
