@@ -18,8 +18,7 @@ default(FIX NO)
 set(flag --output-replacements-xml)
 set(args OUTPUT_VARIABLE output)
 if(FIX)
-  set(flag -i)
-  set(flag2 -s)
+  set(flag -s)
   set(args "")
 endif()
 
@@ -31,7 +30,7 @@ string(LENGTH "${CMAKE_SOURCE_DIR}/" path_prefix_length)
 
 foreach(file IN LISTS files)
   execute_process(
-      COMMAND "${FORMAT_COMMAND}" --style=file "${flag}" "${flag2}" "${file}"
+      COMMAND "${FORMAT_COMMAND}" --style=file "${flag}" "${file}"
       WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
       RESULT_VARIABLE result
       ${args}
