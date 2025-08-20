@@ -13,7 +13,7 @@ default(
     include/*.hpp
     test/*.cpp test/*.hpp
 )
-default(FIX yes)
+default(FIX NO)
 
 set(flag --output-replacements-xml)
 set(args OUTPUT_VARIABLE output)
