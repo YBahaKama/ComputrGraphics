@@ -1,4 +1,4 @@
-/* 
+/*
  * <include/cg/vec2.hpp>
  * Copyright (c) 2025 YusufBahaKama
  *
@@ -9,25 +9,24 @@
  */
 
 
-
 #pragma once
 #include "Export.h"
 
 namespace cg {
 
-	class CG_API Vec2 {
-	public:
-		float x, y;
+class CG_API Vec2 {
+    public:
+    float x, y;
 
-		Vec2();
-		Vec2(float x, float y);
+    Vec2 ();
+    Vec2 (float x, float y);
 
-		float length() const;
+    float length () const;
 
-		Vec2 operator+(const Vec2& other) const;
+    Vec2 operator+ (const Vec2& other) const;
 
-		float dot(const Vec2& other) const;
+    float dot (const Vec2& other) const;
 
-		float cross(const Vec2& other) const;
-	};
-}
+    float cross (const Vec2& other) const;
+};
+} // namespace cg
