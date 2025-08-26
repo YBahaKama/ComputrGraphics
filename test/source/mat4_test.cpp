@@ -148,7 +148,7 @@ TEST_F(Mat4TestFixture, MinorMatrix)
     EXPECT_FLOAT_EQ(M.m[3][3], 1.f);
 
     EXPECT_FLOAT_EQ(M.m[0][2], 0.f);
-    EXPECT_FLOAT_EQ(M.m[0][4], 0.f);
+    EXPECT_FLOAT_EQ(M.m[0][3], 0.f);
     EXPECT_FLOAT_EQ(M.m[2][3], 0.f);
     EXPECT_FLOAT_EQ(M.m[1][2], 0.f);
 }
