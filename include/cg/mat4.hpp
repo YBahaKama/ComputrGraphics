@@ -26,10 +26,12 @@ class CG_API Mat4
     Mat4 operator+(const Mat4 &other) const;
     Mat4 operator-(const Mat4 &other) const;
 
-    float determinant() const;
+    float Determinant() const;
 
-    Mat4 transpose() const;
-    Mat4 inverse() const;
+    Mat4 Transpose() const;
+    Mat4 Minor() const;
+    Mat4 Cofactor() const;
+    Mat4 Inverse() const;
 };
 
 } // namespace cg

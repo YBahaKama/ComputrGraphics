@@ -9,6 +9,10 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
+#include "cg/mat4.hpp"
+#include <cmath>
+#include <stdexcept>
+
 namespace cg
 {
 
@@ -52,7 +56,7 @@ Mat4 Mat4::operator*(const Mat4 &other) const
         for (int j = 0; j < 4; ++j)
         {
             result.m[i][j] =
-                m[i][0] * other.m[0][j] + m[i][1] * other.m[1][j] + m[i][2] * other.m[2][j] + mm[i][3] * other.m[3][j];
+                m[i][0] * other.m[0][j] + m[i][1] * other.m[1][j] + m[i][2] * other.m[2][j] + m[i][3] * other.m[3][j];
         }
     }
     return result;
@@ -84,7 +88,7 @@ Mat4 Mat4::operator-(const Mat4 &other) const
     return result;
 }
 
-float Mat4::determinant()
+float Mat4::Determinant() const
 {
     float det; // Laplace expansion
     det = m[0][3] * m[1][2] * m[2][1] * m[3][0] - m[0][2] * m[1][3] * m[2][1] * m[3][0] -
@@ -92,4 +96,94 @@ float Mat4::determinant()
           m[0][2] * m[1][1] * m[2][3] * m[3][0] - m[0][1] * m[1][2] * m[2][3] * m[3][0];
     return det;
 }
+
+Mat4 Mat4::Transpose() const
+{
+    Mat4 result;
+    for (int i = 0; i < 4; ++i)
+    {
+        for (int j = 0; j < 4; ++j)
+        {
+            result.m[i][j] = m[j][i];
+        }
+    }
+    return result;
+}
+
+Mat4 Mat4::Minor() const
+{
+    Mat4 result;
+
+    for (int i = 0; i < 4; ++i)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            // Create a 3x3 matrix by excluding row i and column j
+            float minor[3][3];
+            int rowIndex = 0, colIndex = 0;
+            for (int row = 0; row < 4; ++row)
+            {
+                if (row == i)
+                    continue;
+                colIndex = 0;
+                for (int col = 0; col < 4; ++col)
+                {
+                    if (col == j)
+                        continue;
+                    minor[rowIndex][colIndex] = this->m[row][col];
+                    colIndex++;
+                }
+                rowIndex++;
+            }
+
+            // Calculate the determinant of the 3x3 matrix
+            float det = minor[0][0] * (minor[1][1] * minor[2][2] - minor[1][2] * minor[2][1]) -
+                        minor[0][1] * (minor[1][0] * minor[2][2] - minor[1][2] * minor[2][0]) +
+                        minor[0][2] * (minor[1][0] * minor[2][1] - minor[1][1] * minor[2][0]);
+
+            result.m[i][j] = det;
+        }
+    }
+
+    return result;
+}
+
+Mat4 Mat4::Cofactor() const
+{
+    Mat4 result = Minor();
+
+    for (int i = 0; i < 4; ++i)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            result.m[i][j] = result.m[i][j] * (float)std::pow(-1.0f, i + j);
+        }
+    }
+
+    return result;
+}
+
+Mat4 Mat4::Inverse() const
+{
+    float det = Determinant();
+    if (det == 0.0f)
+    {
+        throw std::runtime_error("Matrix is singular and cannot be inverted.");
+    }
+
+    Mat4 result = Cofactor();
+
+    result = result.Transpose();
+
+    for (int i = 0; i < 4; ++i)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            result.m[i][j] *= 1.0f / det;
+        }
+    }
+
+    return result;
+}
+
 } // namespace cg

@@ -19,6 +19,7 @@ option(BUILD_SHARED_LIBS "Build ComputerGraphics as a shared library (DLL)" OFF)
 
 # Library definition
 add_library(ComputerGraphics
+    "src/mat4.cpp"
     "src/vec2.cpp"
     "src/vec3.cpp"
     "include/Export.h")
