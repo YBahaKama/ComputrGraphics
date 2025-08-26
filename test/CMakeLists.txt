@@ -60,7 +60,7 @@ target_compile_features(vec3_test PRIVATE cxx_std_20)
 
 add_test(NAME vec3_test COMMAND vec3_test)
 
-add_executable(mat4_test source/mat4_test2.cpp)
+add_executable(mat4_test source/mat4_test.cpp)
 target_link_libraries(mat4_test PRIVATE ComputerGraphics gtest_main)
 target_compile_features(mat4_test PRIVATE cxx_std_20)
 

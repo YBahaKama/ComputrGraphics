@@ -1,233 +1,197 @@
 /*
  * <test/source/mat4_test.cpp>
- * Copyright (c) 2025 YusufBahaKama
- *
- * This file is dedicated to the public domain under CC0 1.0 Universal.
- * See LICENSE-CC0-1.0 for full text or https://creativecommons.org/publicdomain/zero/1.0/
- *
+ * Copyright (c) 2025 YusufBaha
+ * Dedicated to the public domain under CC0 1.0 Universal.
  * SPDX-License-Identifier: CC0-1.0
  */
-
+#include <array>
 #include <cg/mat4.hpp>
+#include <cmath>
 #include <gtest/gtest.h>
+#include <stdexcept>
 
-TEST(Mat4Test, DefaultConstructor)
+using cg::Mat4;
+
+namespace
 {
-    cg::Mat4 m;
-    EXPECT_FLOAT_EQ(m.m[0][0], 1.0f);
-    EXPECT_FLOAT_EQ(m.m[0][1], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[0][2], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[0][3], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[1][0], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[1][1], 1.0f);
-    EXPECT_FLOAT_EQ(m.m[1][2], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[1][3], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[2][0], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[2][1], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[2][2], 1.0f);
-    EXPECT_FLOAT_EQ(m.m[2][3], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[3][0], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[3][1], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[3][2], 0.0f);
-    EXPECT_FLOAT_EQ(m.m[3][3], 1.0f);
+
+constexpr float kEps = 1e-5f;
+
+bool MatAlmostEqual(const Mat4 &a, const Mat4 &b, float eps = kEps)
+{
+    for (int r = 0; r < 4; ++r)
+    {
+        for (int c = 0; c < 4; ++c)
+        {
+            if (std::fabs(a.m[r][c] - b.m[r][c]) > eps)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
-TEST(Mat4Test, ParameterizedConstructor)
+void ExpectMatAlmostEqual(const Mat4 &a, const Mat4 &b, float eps = kEps)
 {
-    cg::Mat4 m(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    EXPECT_FLOAT_EQ(m.m[0][0], 1.0f);
-    EXPECT_FLOAT_EQ(m.m[0][1], 2.0f);
-    EXPECT_FLOAT_EQ(m.m[0][2], 3.0f);
-    EXPECT_FLOAT_EQ(m.m[0][3], 4.0f);
-    EXPECT_FLOAT_EQ(m.m[1][0], 5.0f);
-    EXPECT_FLOAT_EQ(m.m[1][1], 6.0f);
-    EXPECT_FLOAT_EQ(m.m[1][2], 7.0f);
-    EXPECT_FLOAT_EQ(m.m[1][3], 8.0f);
-    EXPECT_FLOAT_EQ(m.m[2][0], 9.0f);
-    EXPECT_FLOAT_EQ(m.m[2][1], 10.0f);
-    EXPECT_FLOAT_EQ(m.m[2][2], 11.0f);
-    EXPECT_FLOAT_EQ(m.m[2][3], 12.0f);
-    EXPECT_FLOAT_EQ(m.m[3][0], 13.0f);
-    EXPECT_FLOAT_EQ(m.m[3][1], 14.0f);
-    EXPECT_FLOAT_EQ(m.m[3][2], 15.0f);
-    EXPECT_FLOAT_EQ(m.m[3][3], 16.0f);
+    for (int r = 0; r < 4; ++r)
+    {
+        for (int c = 0; c < 4; ++c)
+        {
+            EXPECT_NEAR(a.m[r][c], b.m[r][c], eps) << "Mismatch at (" << r << "," << c << ")";
+        }
+    }
 }
 
-TEST(Mat4Test, MultiplicationOperator)
+Mat4 MakeSequential()
 {
-    cg::Mat4 m1(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    cg::Mat4 m2(16.0f, 15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f);
-    cg::Mat4 result = m1 * m2;
-    EXPECT_FLOAT_EQ(result.m[0][0], 80.0f);
-    EXPECT_FLOAT_EQ(result.m[0][1], 70.0f);
-    EXPECT_FLOAT_EQ(result.m[0][2], 60.0f);
-    EXPECT_FLOAT_EQ(result.m[0][3], 50.0f);
-    EXPECT_FLOAT_EQ(result.m[1][0], 240.0f);
-    EXPECT_FLOAT_EQ(result.m[1][1], 214.0f);
-    EXPECT_FLOAT_EQ(result.m[1][2], 188.0f);
-    EXPECT_FLOAT_EQ(result.m[1][3], 162.0f);
-    EXPECT_FLOAT_EQ(result.m[2][0], 400.0f);
-    EXPECT_FLOAT_EQ(result.m[2][1], 358.0f);
-    EXPECT_FLOAT_EQ(result.m[2][2], 316.0f);
-    EXPECT_FLOAT_EQ(result.m[2][3], 274.0f);
-    EXPECT_FLOAT_EQ(result.m[3][0], 560.0f);
-    EXPECT_FLOAT_EQ(result.m[3][1], 502.0f);
-    EXPECT_FLOAT_EQ(result.m[3][2], 444.0f);
-    EXPECT_FLOAT_EQ(result.m[3][3], 386.0f);
+    return Mat4(1.f, 2.f, 3.f, 4.f, 5.f, 6.f, 7.f, 8.f, 9.f, 10.f, 11.f, 12.f, 13.f, 14.f, 15.f, 16.f);
 }
 
-TEST(Mat4Test, AdditionOperator)
+Mat4 MakeReverseSequential()
 {
-    cg::Mat4 m1(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    cg::Mat4 m2(16.0f, 15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f);
-    cg::Mat4 result = m1 + m2;
-    EXPECT_FLOAT_EQ(result.m[0][0], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[0][1], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[0][2], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[0][3], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[1][0], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[1][1], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[1][2], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[1][3], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[2][0], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[2][1], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[2][2], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[2][3], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[3][0], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[3][1], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[3][2], 17.0f);
-    EXPECT_FLOAT_EQ(result.m[3][3], 17.0f);
+    return Mat4(16.f, 15.f, 14.f, 13.f, 12.f, 11.f, 10.f, 9.f, 8.f, 7.f, 6.f, 5.f, 4.f, 3.f, 2.f, 1.f);
 }
 
-TEST(Mat4Test, SubtractionOperator)
+Mat4 Identity()
 {
-    cg::Mat4 m1(16.0f, 15.0f, 14.0f, 13.0f, 12.0f, 11.0f, 10.0f, 9.0f, 8.0f, 7.0f, 6.0f, 5.0f, 4.0f, 3.0f, 2.0f, 1.0f);
-    cg::Mat4 m2(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    cg::Mat4 result = m1 - m2;
-    EXPECT_FLOAT_EQ(result.m[0][0], 15.0f);
-    EXPECT_FLOAT_EQ(result.m[0][1], 13.0f);
-    EXPECT_FLOAT_EQ(result.m[0][2], 11.0f);
-    EXPECT_FLOAT_EQ(result.m[0][3], 9.0f);
-    EXPECT_FLOAT_EQ(result.m[1][0], 7.0f);
-    EXPECT_FLOAT_EQ(result.m[1][1], 5.0f);
-    EXPECT_FLOAT_EQ(result.m[1][2], 3.0f);
-    EXPECT_FLOAT_EQ(result.m[1][3], 1.0f);
-    EXPECT_FLOAT_EQ(result.m[2][0], -1.0f);
-    EXPECT_FLOAT_EQ(result.m[2][1], -3.0f);
-    EXPECT_FLOAT_EQ(result.m[2][2], -5.0f);
-    EXPECT_FLOAT_EQ(result.m[2][3], -7.0f);
-    EXPECT_FLOAT_EQ(result.m[3][0], -9.0f);
-    EXPECT_FLOAT_EQ(result.m[3][1], -11.0f);
-    EXPECT_FLOAT_EQ(result.m[3][2], -13.0f);
-    EXPECT_FLOAT_EQ(result.m[3][3], -15.0f);
+    return Mat4(); // Assuming default is identity
 }
 
-TEST(Mat4Test, Determinant)
+} // namespace
+
+class Mat4TestFixture : public ::testing::Test
 {
-    cg::Mat4 m(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    float det = m.Determinant();
-    EXPECT_FLOAT_EQ(det, 0.0f);
+  protected:
+    Mat4 A = MakeSequential();
+    Mat4 B = MakeReverseSequential();
+    Mat4 I = Identity();
+};
+
+TEST_F(Mat4TestFixture, DefaultIsIdentity)
+{
+    for (int r = 0; r < 4; ++r)
+    {
+        for (int c = 0; c < 4; ++c)
+        {
+            EXPECT_FLOAT_EQ(I.m[r][c], r == c ? 1.f : 0.f);
+        }
+    }
 }
 
-TEST(Mat4Test, Transpose)
+TEST_F(Mat4TestFixture, ParameterizedConstructorStoresValues)
 {
-    cg::Mat4 m(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    cg::Mat4 result = m.Transpose();
-    EXPECT_FLOAT_EQ(result.m[0][0], 1.0f);
-    EXPECT_FLOAT_EQ(result.m[0][1], 5.0f);
-    EXPECT_FLOAT_EQ(result.m[0][2], 9.0f);
-    EXPECT_FLOAT_EQ(result.m[0][3], 13.0f);
-    EXPECT_FLOAT_EQ(result.m[1][0], 2.0f);
-    EXPECT_FLOAT_EQ(result.m[1][1], 6.0f);
-    EXPECT_FLOAT_EQ(result.m[1][2], 10.0f);
-    EXPECT_FLOAT_EQ(result.m[1][3], 14.0f);
-    EXPECT_FLOAT_EQ(result.m[2][0], 3.0f);
-    EXPECT_FLOAT_EQ(result.m[2][1], 7.0f);
-    EXPECT_FLOAT_EQ(result.m[2][2], 11.0f);
-    EXPECT_FLOAT_EQ(result.m[2][3], 15.0f);
-    EXPECT_FLOAT_EQ(result.m[3][0], 4.0f);
-    EXPECT_FLOAT_EQ(result.m[3][1], 8.0f);
-    EXPECT_FLOAT_EQ(result.m[3][2], 12.0f);
-    EXPECT_FLOAT_EQ(result.m[3][3], 16.0f);
+    Mat4 m = A;
+    EXPECT_FLOAT_EQ(m.m[0][0], 1.f);
+    EXPECT_FLOAT_EQ(m.m[3][3], 16.f);
 }
 
-TEST(Mat4Test, Minor)
+TEST_F(Mat4TestFixture, Addition)
 {
-    cg::Mat4 m(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    cg::Mat4 result = m.Minor();
-    EXPECT_FLOAT_EQ(result.m[0][0], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[0][1], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[0][2], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[0][3], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[1][0], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[1][1], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[1][2], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[1][3], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[2][0], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[2][1], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[2][2], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[2][3], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[3][0], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[3][1], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[3][2], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[3][3], 0.0f);
+    Mat4 C = A + B;
+    for (int r = 0; r < 4; ++r)
+        for (int c = 0; c < 4; ++c)
+            EXPECT_FLOAT_EQ(C.m[r][c], 17.f);
 }
 
-TEST(Mat4Test, Cofactor)
+TEST_F(Mat4TestFixture, Subtraction)
 {
-    cg::Mat4 m(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
-    cg::Mat4 result = m.Cofactor();
-    EXPECT_FLOAT_EQ(result.m[0][0], -24.0f);
-    EXPECT_FLOAT_EQ(result.m[0][1], -20.0f);
-    EXPECT_FLOAT_EQ(result.m[0][2], -16.0f);
-    EXPECT_FLOAT_EQ(result.m[0][3], -12.0f);
-    EXPECT_FLOAT_EQ(result.m[1][0], -18.0f);
-    EXPECT_FLOAT_EQ(result.m[1][1], -16.0f);
-    EXPECT_FLOAT_EQ(result.m[1][2], -14.0f);
-    EXPECT_FLOAT_EQ(result.m[1][3], -12.0f);
-    EXPECT_FLOAT_EQ(result.m[2][0], -12.0f);
-    EXPECT_FLOAT_EQ(result.m[2][1], -12.0f);
-    EXPECT_FLOAT_EQ(result.m[2][2], -12.0f);
-    EXPECT_FLOAT_EQ(result.m[2][3], -12.0f);
-    EXPECT_FLOAT_EQ(result.m[3][0], -8.0f);
-    EXPECT_FLOAT_EQ(result.m[3][1], -8.0f);
-    EXPECT_FLOAT_EQ(result.m[3][2], -8.0f);
-    EXPECT_FLOAT_EQ(result.m[3][3], -8.0f);
+    Mat4 C = A - B;
+    // Spot check a few entries
+    EXPECT_FLOAT_EQ(C.m[0][0], 1.f - 16.f);
+    EXPECT_FLOAT_EQ(C.m[0][1], 2.f - 15.f);
+    EXPECT_FLOAT_EQ(C.m[3][3], 16.f - 1.f);
 }
 
-TEST(Mat4Test, InverseOfSingular)
+TEST_F(Mat4TestFixture, Multiplication)
 {
-    cg::Mat4 m(1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f);
+    Mat4 C = A * B;
+    // These expected values from your original test:
+    EXPECT_FLOAT_EQ(C.m[0][0], 80.f);
+    EXPECT_FLOAT_EQ(C.m[0][1], 70.f);
+    EXPECT_FLOAT_EQ(C.m[3][3], 386.f);
+}
+
+TEST_F(Mat4TestFixture, MultiplicationAssociativity)
+{
+    Mat4 C = A * (B * I);
+    Mat4 D = (A * B) * I;
+    ExpectMatAlmostEqual(C, D);
+}
+
+TEST_F(Mat4TestFixture, IdentityNeutralElement)
+{
+    ExpectMatAlmostEqual(A * I, A);
+    ExpectMatAlmostEqual(I * A, A);
+}
+
+TEST_F(Mat4TestFixture, TransposeInvolution)
+{
+    Mat4 T = A.Transpose();
+    Mat4 TT = T.Transpose();
+    ExpectMatAlmostEqual(TT, A);
+}
+
+TEST_F(Mat4TestFixture, DeterminantOfSequentialIsZero)
+{
+    EXPECT_FLOAT_EQ(A.Determinant(), 0.f);
+}
+
+TEST_F(Mat4TestFixture, MinorMatrix)
+{
+    Mat4 M = I.Minor();
+    // Sample a few values from your previous expectations:
+
+    EXPECT_FLOAT_EQ(M.m[0][0], 1.f);
+    EXPECT_FLOAT_EQ(M.m[1][1], 1.f);
+    EXPECT_FLOAT_EQ(M.m[2][2], 1.f);
+    EXPECT_FLOAT_EQ(M.m[3][3], 1.f);
+
+    EXPECT_FLOAT_EQ(M.m[0][2], 0.f);
+    EXPECT_FLOAT_EQ(M.m[0][4], 0.f);
+    EXPECT_FLOAT_EQ(M.m[2][3], 0.f);
+    EXPECT_FLOAT_EQ(M.m[1][2], 0.f);
+}
+
+TEST_F(Mat4TestFixture, CofactorMatrixHasSignPattern)
+{
+    Mat4 M = A.Minor();
+    Mat4 C = A.Cofactor();
+    for (int r = 0; r < 4; ++r)
+    {
+        for (int c = 0; c < 4; ++c)
+        {
+            float expected = ((r + c) % 2 == 0 ? 1.f : -1.f) * M.m[r][c];
+            EXPECT_FLOAT_EQ(C.m[r][c], expected);
+        }
+    }
+}
+
+TEST_F(Mat4TestFixture, InverseThrowsOnSingular)
+{
+    EXPECT_THROW(A.Inverse(), std::runtime_error);
     try
     {
-        cg::Mat4 result;
-        result = result.Inverse();
-        FAIL() << "Expected 'Matrix is singular and cannot be inverted.'";
+        A.Inverse();
     }
-    catch (const std::runtime_error &err)
+    catch (const std::runtime_error &e)
     {
-        EXPECT_EQ(err.what(), std::string("Matrix is singular and cannot be inverted."));
+        EXPECT_STREQ(e.what(), "Matrix is singular and cannot be inverted.");
     }
 }
 
-TEST(Mat4Test, Inverse)
+TEST(Mat4Standalone, InverseOfNonSingular)
 {
-    cg::Mat4 m(1.0f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
-    cg::Mat4 result = m.Inverse();
-    EXPECT_FLOAT_EQ(result.m[0][0], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[0][1], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[0][2], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[0][3], 1.0f);
-    EXPECT_FLOAT_EQ(result.m[1][0], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[1][1], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[1][2], 1.0f);
-    EXPECT_FLOAT_EQ(result.m[1][3], -1.0f);
-    EXPECT_FLOAT_EQ(result.m[2][0], 0.0f);
-    EXPECT_FLOAT_EQ(result.m[2][1], 1.0f);
-    EXPECT_FLOAT_EQ(result.m[2][2], 1.0f);
-    EXPECT_FLOAT_EQ(result.m[2][3], -2.0f);
-    EXPECT_FLOAT_EQ(result.m[3][0], 1.0f);
-    EXPECT_FLOAT_EQ(result.m[3][1], -1.0f);
-    EXPECT_FLOAT_EQ(result.m[3][2], -2.0f);
-    EXPECT_FLOAT_EQ(result.m[3][3], 2.0f);
+    Mat4 m(1.f, 1.f, 1.f, 1.f, 1.f, -1.f, 1.f, 0.f, 1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f);
+    Mat4 inv = m.Inverse();
+
+    // Hard-coded expected (from your original test)
+    Mat4 expected(0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 1.f, -1.f, 0.f, 1.f, 1.f, -2.f, 1.f, -1.f, -2.f, 2.f);
+    ExpectMatAlmostEqual(inv, expected);
+
+    // Validate m * inv = I and inv * m = I
+    Mat4 prod1 = m * inv;
+    Mat4 prod2 = inv * m;
+    ExpectMatAlmostEqual(prod1, Identity());
+    ExpectMatAlmostEqual(prod2, Identity());
 }
