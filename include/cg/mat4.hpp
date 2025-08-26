@@ -10,6 +10,7 @@
 
 #pragma once
 #include "Export.h"
+#include <cmath>
 
 namespace cg
 {
@@ -32,6 +33,8 @@ class CG_API Mat4
     Mat4 Minor() const;
     Mat4 Cofactor() const;
     Mat4 Inverse() const;
+
+    static bool isAllmostEqualFloat(float a, float b);
 };
 
 } // namespace cg

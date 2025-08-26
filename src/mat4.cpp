@@ -16,6 +16,12 @@
 namespace cg
 {
 
+bool Mat4::isAllmostEqualFloat(float a, float b)
+{
+    constexpr float EPSILON = 1e-6f;
+    return std::fabs(a - b) < EPSILON;
+}
+
 Mat4::Mat4()
 {
     for (int i = 0; i < 4; ++i)
@@ -119,7 +125,7 @@ Mat4 Mat4::Minor() const
         for (int j = 0; j < 4; j++)
         {
             // Create a 3x3 matrix by excluding row i and column j
-            float minor[3][3];
+            float minor[3][3]{};
             int rowIndex = 0, colIndex = 0;
             for (int row = 0; row < 4; ++row)
             {
@@ -156,7 +162,7 @@ Mat4 Mat4::Cofactor() const
     {
         for (int j = 0; j < 4; j++)
         {
-            result.m[i][j] = result.m[i][j] * (float)std::pow(-1.0f, i + j);
+            result.m[i][j] = result.m[i][j] * static_cast<float>(std::pow(-1.0f, i + j));
         }
     }
 
@@ -165,8 +171,8 @@ Mat4 Mat4::Cofactor() const
 
 Mat4 Mat4::Inverse() const
 {
-    float det = Determinant();
-    if (det == 0.0f)
+    const float det = Determinant();
+    if (Mat4::isAllmostEqualFloat(det, 0.0f))
     {
         throw std::runtime_error("Matrix is singular and cannot be inverted.");
     }
