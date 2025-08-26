@@ -8,7 +8,6 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
-#include <Windows.h>
 #include <cg/mat4.hpp>
 #include <cg/vec2.hpp>
 #include <iostream>
@@ -29,10 +28,6 @@ int main()
         }
         std::cout << std::endl;
     }
-
-    while (!GetAsyncKeyState(VK_TAB))
-
-        ;
 
     d = d.Inverse();
     std::cout << "Printing Inverse\n";
