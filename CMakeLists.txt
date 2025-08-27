@@ -22,7 +22,7 @@ add_library(ComputerGraphics
     "src/mat4.cpp"
     "src/vec2.cpp"
     "src/vec3.cpp"
-    "include/Export.h")
+    "include/Export.h" "src/vec4.cpp" "src/transformations.cpp")
 
 # Public includes for build and install
 target_include_directories(ComputerGraphics

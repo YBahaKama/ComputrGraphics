@@ -8,25 +8,31 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
-
 #pragma once
 #include "Export.h"
 
-namespace cg {
+namespace cg
+{
 
-class CG_API Vec2 {
-    public:
+class CG_API Vec2
+{
+  public:
     float x, y;
 
-    Vec2 ();
-    Vec2 (float x, float y);
+    Vec2();
+    Vec2(float x, float y);
 
-    float length () const;
+    float length() const;
 
-    Vec2 operator+ (const Vec2& other) const;
+    Vec2 operator+(const Vec2 &other) const;
+    Vec2 operator-(const Vec2 &other) const;
+    Vec2 operator*(const Vec2 &other) const;
+    Vec2 operator/(const Vec2 &other) const;
 
-    float dot (const Vec2& other) const;
+    Vec2 Normalize() const;
 
-    float cross (const Vec2& other) const;
+    float dot(const Vec2 &other) const;
+
+    float cross(const Vec2 &other) const;
 };
 } // namespace cg
