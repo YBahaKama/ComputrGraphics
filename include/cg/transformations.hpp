@@ -21,5 +21,9 @@ class CG_API Transformations
     static float degreesToRadians(float degrees);
     static float radiansToDegrees(float radians);
     static bool isAllmostEqualFloat(float a, float b);
+
+    Mat4 translationMatrix(const Vec3 &);
+    Mat4 rotationMatrix(float angle, const Vec3 &axis);
+    Mat4 scalingMatrix(const Vec3 &);
 };
 } // namespace cg
